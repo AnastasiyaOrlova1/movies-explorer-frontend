@@ -27,7 +27,7 @@ export default function Navigation(props) {
         <div className={burgerMenuClassName}></div>
       </button>
       <div
-        className={`navigation__content ${props.isOpen ? "navigation__content_opened" : ""
+        className={`navigation__content_hidden ${props.isOpen ? "navigation__content" : ""
           }`}
       >
         <div className="navigation__links-burger">
@@ -35,7 +35,7 @@ export default function Navigation(props) {
             <NavLink
               exact
               to="/"
-              className="navigation__link navigation__link_burger"
+              className="navigation__link navigation__link_mobile"
               onClick={handleBurgerClose}
             >
               Главная
@@ -58,11 +58,10 @@ export default function Navigation(props) {
             </NavLink>
           </div>
           <section className="navigation__profile">
-            <Link to="/profile">
+            <Link to="/profile" className="navigation__profile_icon">
               <img
-                className="navigation__profile_icon button"
                 src={icon}
-                alt="Иконка главной страницы"
+                alt="Аккаунт"
                 onClick={handleBurgerClose}
               />
             </Link>

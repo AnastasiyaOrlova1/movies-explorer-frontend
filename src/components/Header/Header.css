@@ -67,8 +67,8 @@
 
 @media screen and (max-width: 767px) {
   .header {
-    max-width: 290px;
-  }
+    width: 90%;
+  } 
   .header__regiter-button {
     font-size: 10px;
     line-height: 16px;

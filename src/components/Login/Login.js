@@ -11,7 +11,7 @@ export default function Register(props) {
   return (
     <section className="sign">
       <NavLink exact to="/">
-        <img className="header__logo" src={logo} alt="Movies Explorer logo" />
+        <img className="sign__logo logo" src={logo} alt="Movies Explorer" />
       </NavLink>
       <h1 className="sign__title">Рады видеть!</h1>
       <form className="sign__form" method="PATCH" action="#">

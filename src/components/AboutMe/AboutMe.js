@@ -13,8 +13,8 @@ export default function AboutMe() {
           Я родился и живу в Саратове, закончил факультет экономики СГУ. У меня есть жена
           и дочь. Я люблю слушать музыку, а ещё увлекаюсь бегом. Недавно начал кодить. С 2015 года работал в компании «СКБ Контур». После того, как прошёл курс по веб-разработке, начал заниматься фриланс-заказами и ушёл с постоянной работы.
       </p>
-        <a className="about-me__social-links" href="https://www.facebook.com/anastasiya.orlova.121">Facebook</a>
-        <a className="about-me__social-links" href="https://github.com/AnastasiyaOrlova1">Github</a>
+        <a className="about-me__social-links" href="https://www.facebook.com/anastasiya.orlova.121" target="_blank" rel="noreferrer">Facebook</a>
+        <a className="about-me__social-links" href="https://github.com/AnastasiyaOrlova1" target="_blank" rel="noreferrer">Github</a>
       </div>
     </section>
   );

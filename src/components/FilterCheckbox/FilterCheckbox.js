@@ -2,9 +2,9 @@ import React from 'react';
 import './FilterCheckbox.css';
 
 const FilterCheckbox = () => (
-  <div className="search-form__checkbox-container">
-    <input className="search-form__checkbox" type="checkbox" required />
-    <p className="search-form__checkbox-label">Короткометражки</p>
+  <div className="filter-container">
+    <input className="filter-container__checkbox" type="checkbox" required />
+    <p className="filter-container__checkbox-label">Короткометражки</p>
   </div>
 );
 

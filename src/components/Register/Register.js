@@ -6,7 +6,7 @@ export default function Register() {
   return (
     <section className="sign">
       <NavLink exact to="/">
-        <img className="header__logo" src={logo} alt="Movies Explorer logo" />
+        <img className="sign__logo logo" src={logo} alt="Movies Explorer logo" />
       </NavLink>
       <h1 className="sign__title">Добро пожаловать!</h1>
       <form className="sign__form" method="PATCH" action="#">
@@ -47,10 +47,11 @@ export default function Register() {
           required
         />
         <span className="sign__input-error">Что-то пошло не так...</span>
-
+        <Link to="/sign-in" className="sign__link-to-sign button">
         <button type="submit" className="sign__submit-button button">
           Зарегистрироваться
         </button>
+        </Link>
         <span className="sign__to-sign">
           Уже зарегистрированы?{" "}
           <Link to="/sign-in" className="sign__link-to-sign button">

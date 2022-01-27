@@ -13,7 +13,7 @@ export default function Header(props) {
   return (
     <header className={`${headerClassName}`}>
       <NavLink exact to="/">
-        <img className="header__logo" src={logo} alt="Movies Explorer logo" />
+        <img className="header__logo logo" src={logo} alt="Movies Explorer logo" />
       </NavLink>
       {props.loggedIn ? (
         <>

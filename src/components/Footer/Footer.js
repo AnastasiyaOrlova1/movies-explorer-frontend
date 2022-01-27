@@ -15,15 +15,15 @@ export default function Footer(props) {
         <p className="footer__year">&copy; 2020</p>
         <ul className="footer__links">
           <li className="footer__link-element">
-            <a className="footer__link" href="https://praktikum.yandex.ru/">Яндекс.Практикум</a>
+            <a className="footer__link" href="https://praktikum.yandex.ru/" target="_blank" rel="noreferrer">Яндекс.Практикум</a>
           </li>
 
           <li className="footer__link-element">
-            <a className="footer__link" href="https://github.com/AnastasiyaOrlova1">Github</a>
+            <a className="footer__link" href="https://github.com/AnastasiyaOrlova1" target="_blank" rel="noreferrer">Github</a>
           </li>
 
           <li className="footer__link-element">
-            <a className="footer__link" href="https://www.facebook.com/anastasiya.orlova.121">Facebook</a>
+            <a className="footer__link" href="https://www.facebook.com/anastasiya.orlova.121" target="_blank" rel="noreferrer">Facebook</a>
           </li>
         </ul>
       </div>

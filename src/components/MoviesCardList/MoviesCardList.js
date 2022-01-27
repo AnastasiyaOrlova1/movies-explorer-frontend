@@ -9,7 +9,7 @@ export default function MoviesCardList(props) {
   const { pathname } = useLocation();
   return (
     <section className="movies-card-list">
-      <section className="movies-card-list-elements">
+      <section className="movies-card-list__elements">
         {pathname === '/movies' && <MoviesCard filePath={require('../../images/test-pic1.png').default} title={`33 слова о дизайне`} />}
         {pathname === '/movies' && <MoviesCard filePath={require('../../images/test-pic2.png').default} title={`Киноальманах «100 лет дизайна»`} />}
         {pathname === '/movies' && <MoviesCard filePath={require('../../images/test-pic3.png').default} title={`В погоне за Бенкси`} />}

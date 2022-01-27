@@ -4,12 +4,13 @@
   
   .movies-card__preview {
     width: 100%;
+    margin-bottom: 15px;
   }
   
   .movies-card__info {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     border-bottom: 1px solid #424242;
     padding-bottom: 16px;
   }
@@ -19,7 +20,8 @@
     font-weight: 500;
     font-size: 13px;
     line-height: 16px;
-    margin-top: 9px;
+    margin-top: 2px;
+    margin-right:20px;
   }
   
   .movies-card__like_active {
@@ -30,6 +32,7 @@
     box-sizing: border-box;
     box-shadow: none;
     border: none;
+    margin-top: 0;
   }
   
   .movies-card__like_disabled {
@@ -39,6 +42,7 @@
     box-sizing: border-box;
     box-shadow: none;
     border: none;
+    margin-top: 0;
   }
   
   .movies-card__delete {
