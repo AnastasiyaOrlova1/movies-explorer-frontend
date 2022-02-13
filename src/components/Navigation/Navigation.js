@@ -1,73 +1,74 @@
-import React from "react";
+import React, { useState } from 'react';
+import { NavLink } from 'react-router-dom';
 import "./Navigation.css";
-import icon from "../../images/navigation__icon.svg";
-import { NavLink, Link } from "react-router-dom";
 
-export default function Navigation(props) {
-  const burgerMenuClassName = `${props.isBurgerMenuOpened
-    ? "navigation__burger-line_close"
-    : "navigation__burger-line"
-    }`;
-
-  function handleBurgerOpen() {
-    props.onOpenBurgerClick();
+function Navigation() {
+  const [isOpened, setIsOpened] = useState(false);
+  function handleNavClick() {
+    setIsOpened((state) => !state);
   }
-  function handleBurgerClose() {
-    props.onCloseBurgerClick();
+
+  function closeNavClick() {
+    setIsOpened(false); 
   }
   return (
-    <nav className="navigation">
+    <div className='navigation'>
       <button
-        className="navigation__burger button"
-        type="button"
-        onClick={handleBurgerOpen}
+        className={`isOpened navigation__burger-btn navigation__burger-btn_hidden hover no-display ${
+          isOpened && 'navigation__close-btn_active'
+        }`}
+        type='button'
+        onClick={handleNavClick}
+      ></button>
+
+      <nav
+        className={`navigation__container navigation__container_hidden ${
+          isOpened && 'navigation__container_active'
+        }`}
       >
-        <div className={burgerMenuClassName}></div>
-        <div className={burgerMenuClassName}></div>
-        <div className={burgerMenuClassName}></div>
-      </button>
-      <div
-        className={`navigation__content_hidden ${props.isOpen ? "navigation__content" : ""
-          }`}
-      >
-        <div className="navigation__links-burger">
-          <div className="navigation__links">
+        <ul className='navigation__list'>
+          <li className='navigation__list-item'>
             <NavLink
+              className='navigation__list-item-link navigation__list-item-link_hidden hover'
               exact
-              to="/"
-              className="navigation__link navigation__link_mobile"
-              onClick={handleBurgerClose}
+              to='/'
+              activeClassName='navigation__list-item-link_active'
+              onClick={handleNavClick}
             >
               Главная
             </NavLink>
+          </li>
+          <li className='navigation__list-item'>
             <NavLink
-              exact
-              to="/movies"
-              className="navigation__link"
-              onClick={handleBurgerClose}
+              className='navigation__list-item-link hover'
+              to='/movies'
+              activeClassName='navigation__list-item-link_active'
+              onClick={closeNavClick}
             >
               Фильмы
             </NavLink>
+          </li>
+          <li className='navigation__list-item'>
             <NavLink
-              exact
-              to="/saved-movies"
-              className="navigation__link"
-              onClick={handleBurgerClose}
+              className='navigation__list-item-link hover'
+              to='/saved-movies'
+              activeClassName='navigation__list-item-link_active'
+              onClick={closeNavClick}
             >
               Сохранённые фильмы
             </NavLink>
-          </div>
-          <section className="navigation__profile">
-            <Link to="/profile" className="navigation__profile_icon">
-              <img
-                src={icon}
-                alt="Аккаунт"
-                onClick={handleBurgerClose}
-              />
-            </Link>
-          </section>
-        </div>
-      </div>
-    </nav>
+          </li>
+          <li className='navigation__list-item'>
+            <NavLink
+              className='navigation__list-item-link navigation__list-item-profile hover'
+              to='/profile'
+              onClick={closeNavClick}
+            ></NavLink>
+          </li>
+        </ul>
+      </nav>
+    </div>
   );
 }
+
+export default Navigation;

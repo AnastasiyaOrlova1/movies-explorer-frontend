@@ -1,32 +1,59 @@
+import React from 'react';
+import { useLocation } from 'react-router-dom';
 import "./Footer.css";
 
-export default function Footer(props) {
-
-  const footerClassName = (
-    `${props.isSign ? 'footer_hidden' : 'footer'}`
-  )
-
+function Footer() {
+  const location = useLocation();
   return (
-    <footer className={`${footerClassName}`}>
-      <h3 className="footer__title">
+    <footer
+      className={`footer ${
+        (location.pathname === '/signup' && 'auth-no-display') ||
+        (location.pathname === '/signin' && 'auth-no-display') ||
+        (location.pathname === '/profile' && 'auth-no-display') ||
+        (location.pathname === '*' && 'auth-no-display')
+      }`}
+    >
+      <p className='footer__text'>
         Учебный проект Яндекс.Практикум х BeatFilm.
-      </h3>
-      <div className="footer__content">
-        <p className="footer__year">&copy; 2020</p>
-        <ul className="footer__links">
-          <li className="footer__link-element">
-            <a className="footer__link" href="https://praktikum.yandex.ru/" target="_blank" rel="noreferrer">Яндекс.Практикум</a>
-          </li>
+      </p>
 
-          <li className="footer__link-element">
-            <a className="footer__link" href="https://github.com/AnastasiyaOrlova1" target="_blank" rel="noreferrer">Github</a>
+      <div className='footer__container'>
+        <ul className='footer__links-list'>
+          <li className='footer__links-list-item'>
+            <a
+              className='footer__link hover'
+              href='https://praktikum.yandex.ru'
+              target='_blank'
+              rel='noreferrer'
+            >
+              Яндекс.Практикум
+            </a>
           </li>
-
-          <li className="footer__link-element">
-            <a className="footer__link" href="https://www.facebook.com/anastasiya.orlova.121" target="_blank" rel="noreferrer">Facebook</a>
+          <li className='footer__links-list-item'>
+            <a
+              className='footer__link hover'
+              href='https://github.com/AnastasiyaOrlova1'
+              target='_blank'
+              rel='noreferrer'
+            >
+              GitHub
+            </a>
+          </li>
+          <li className='footer__links-list-item'>
+            <a
+              className='footer__link hover'
+              href='https://www.facebook.com/anastasiya.orlova.121'
+              target='_blank'
+              rel='noreferrer'
+            >
+              Facebook
+            </a>
           </li>
         </ul>
+        <p className='footer__copyright'>&copy;2021</p>
       </div>
     </footer>
   );
 }
+
+export default Footer;

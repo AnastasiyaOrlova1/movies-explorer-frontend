@@ -1,41 +1,69 @@
-import React from "react";
+import { useLocation } from 'react-router-dom';
 import "./MoviesCard.css";
-//import movie from "../../images/test-pic1.png";
-
-export default function MoviesCard(props) {
-  /*const cardLikeButtonClassName = (
-    `${props.isLiked ? 'movies-card__like_active' : 'movies-card__like_disabled'}`
-  );*/
-  // const cardDeleteButtonClassName = (
-  //   `${props.isOwn ? 'movies-card__delete' : `${cardLikeButtonClassName}`}`
-  // );
 
 
-    const [liked, setLiked] = React.useState(false);
-   
-    function handleLikeChange() {
-     setLiked(!liked);
+function MoviesCard({ movie, onLikeClick, checkBookmarkStatus}){
+  const location = useLocation();
+  const { nameRU, duration, image, trailer } = movie;
+
+    const isLiked = checkBookmarkStatus(movie);
+    const durationConverter = (duration) => {
+        const hours = Math.floor(duration / 60);
+        const minutes = duration % 60;
+        return `${hours > 0 ? hours + "ч " : ""}${minutes}м`;
+    };
+
+
+    function handleBookmarkClick() {
+        onLikeClick(movie, isLiked);
     }
 
-  /*function handleCardLike() {
-    props.onCardLike(props)
-  }*/
-  function handleCardDelete() {
-    props.onCardDelete()
-  }
+
+
   return (
-    <section className="movies-card">
-      <img className="movies-card__preview" src={props.filePath} alt="Фильм" />
-      <div className="movies-card__info">
-          <h3 className="movies-card__title">{props.title}</h3>
-          {props.isOwn
-          ?
-          <button className="movies-card__delete button" onClick={handleCardDelete}></button>
-          :
-          <button className = {`movies-card__like${liked ? '_active' : '_disabled'}`} onClick={handleLikeChange}></button>
-          }
+    <li className='movie-card'>
+      <div className='movie-card__container'>
+
+        <a
+          className='movie-card__img-link hover'
+          href={trailer}
+          target='_blank'
+          rel='noreferrer'
+        >
+          <img
+            className='movie-card__img'
+            src={image}
+            alt={`Трейлер фильма ${nameRU}`}
+          />
+        </a>
+        <div className='movie-card__info-container'>
+          <h3 className='movie-card__title'>{nameRU}</h3>
+
+          {location.pathname === '/movies' && (
+            <button
+              className={`movie-card__save-btn ${isLiked && 'movie-card__save-btn_saved'
+                }`}
+              type="button"
+              aria-label="Сохранить"
+              onClick={handleBookmarkClick}
+            />
+          )}
+          {location.pathname === '/saved-movies' && (
+            <button
+              className="movie-card__save-btn_remove"
+              type="button"
+              aria-label="Сохранить"
+              onClick={handleBookmarkClick}
+              //onClick={removeMovies}
+            />
+          )}
+
+        </div>
+        <p className='movie-card__duration'>{durationConverter(duration)}</p>
+
       </div>
-      <span className="movies-card__duration">1ч42м</span>
-    </section>
+    </li>
   );
 }
+
+export default MoviesCard;

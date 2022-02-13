@@ -3,8 +3,8 @@
   background-color: #073042;
   background-size: cover;
   height: 524px;
-  margin-top: -78px;
-  padding-top: 78px;
+  margin-top: -90px;
+  padding-top: 90px;
 }
 
 .promo__title {
@@ -15,7 +15,7 @@
   text-align: center;
   padding: 0 3em;
   letter-spacing: -0.04em;
-  z-index: 1;
+  z-index: 0;
 }
 
 .promo__background {

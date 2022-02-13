@@ -1,23 +1,60 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import SearchForm from '../SearchForm/SearchForm';
+import MoviesCardList from '../MoviesCardList/MoviesCardList';
 import "./SavedMovies.css";
-import SearchForm from "../SearchForm/SearchForm.js";
-import MoviesCardList from "../MoviesCardList/MoviesCardList.js";
-import MoviesCard from "../MoviesCard/MoviesCard";
-import { useLocation } from "react-router-dom";
 
-export default function SavedMovies() {
+function SavedMovies({
+  isLoading,
+  onSubmitSearch,
+  movies,
+  setPreloader,
+  moviesSearchResponse,
+  toggleMovieLike,
+  checkBookmarkStatus,
+  sortShortMovies,
+  removeMovies
+}) {
+  const [shortMovies, setShortMovies] = useState([]);
+  const [isChecked, setIsChecked] = useState(false);
 
-  const location = useLocation();
-  const isOwn = `${location.pathname === "/saved-movies" ? true : false}`;
-
-  function handleCardDelete() {
-    MoviesCard.remove();
-  }
+  useEffect(() => {
+    if (isChecked) {
+      setShortMovies(sortShortMovies(movies));
+    }
+  }, [isChecked]);
 
   return (
-    <section className="movies">
-      <SearchForm />
-      <MoviesCardList isOwn={isOwn} onCardDelete={handleCardDelete} />
+    <section className='saved-movies'>
+      <SearchForm
+        handleSearch={onSubmitSearch}
+        setPreloader={setPreloader}
+        setIsChecked={setIsChecked}
+        isLoading={isLoading}
+      />
+      {moviesSearchResponse
+        ? movies.length === 0 && (
+            <p className='movie__response'>{moviesSearchResponse}</p>
+          )
+        : movies.length === 0 && (
+            <p className='movie__response'>Нет сохраненных фильмов</p>
+          )}
+
+      {isChecked && movies.length !== 0 && shortMovies.length === 0 && (
+        <p className='movie__response'>Среди фильмов нет короткометражек</p>
+      )}
+
+      {movies.length !== 0 && (
+        <MoviesCardList
+          movies={isChecked ? shortMovies : movies}
+          toggleMovieLike={toggleMovieLike}
+          checkBookmarkStatus={checkBookmarkStatus}
+          isSavedPage={true}
+          isLoading={isLoading}
+          handleDelete={removeMovies}
+        />
+      )}
     </section>
   );
 }
+
+export default SavedMovies;

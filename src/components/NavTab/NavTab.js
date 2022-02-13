@@ -1,4 +1,5 @@
 import "./NavTab.css";
+import "./NavTab.css";
 
 export default function NavTab(props) {
   return (
