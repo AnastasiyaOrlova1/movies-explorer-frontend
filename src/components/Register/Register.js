@@ -37,7 +37,7 @@ function Register({ onRegister, isLoading }) {
           maxLength='200'
           required
           onChange={handleChange}
-          value={values.name || " "}
+          value={values.name || ""}
         />
         <span id='input-error' className='error-text'>{errors.name}</span>
       </label>
@@ -55,6 +55,7 @@ function Register({ onRegister, isLoading }) {
           required
           onChange={handleChange}
           value={values.email || ""}
+          pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
         />
         <span id='input-error' className='error-text'>{errors.email}</span>
       </label>

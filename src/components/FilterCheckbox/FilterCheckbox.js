@@ -1,24 +1,22 @@
-import React, { useState } from "react";
-import "./FilterCheckbox.css";
+import React from 'react'
+import './FilterCheckbox.css'
 
-function FilterCheckbox({ onCheckboxToggle }) {
-
-  const [isChecked, setChecked] = useState(false);
-  function onChange(event) {
-      onCheckboxToggle(!isChecked);
-      setChecked(event.target.checked);
-  }
+function FilterCheckbox({ onCheckboxToggle, isChecked }) {
   return (
-    <div className='filter-checkbox'>
-      
-      <label className='filter-checkbox__toggle'>
-        <input className='filter-checkbox__input' type='checkbox' id='toggle' onChange={(e) => onChange(e)} />
-        <span className='filter-checkbox__input-visible'></span>
+    <div className="filter-checkbox">
+      <label className="filter-checkbox__toggle">
+        <input
+          className="filter-checkbox__input"
+          type="checkbox"
+          id="toggle"
+          onChange={onCheckboxToggle}
+          checked={isChecked}
+        />
+        <span className="filter-checkbox__input-visible"></span>
       </label>
-      <p className='filter-checkbox__text'>Короткометражки</p>
+      <p className="filter-checkbox__text">Короткометражки</p>
     </div>
-  );
+  )
 }
 
-export default FilterCheckbox;
-
+export default FilterCheckbox

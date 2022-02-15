@@ -1,21 +1,26 @@
-import React, { useEffect, useState } from "react";
-import SearchForm from '../SearchForm/SearchForm';
-import MoviesCardList from '../MoviesCardList/MoviesCardList';
-import "./SavedMovies.css";
+import React, { useState, useMemo, useEffect } from 'react'
+import SearchForm from '../SearchForm/SearchForm'
+import MoviesCardList from '../MoviesCardList/MoviesCardList'
+import './SavedMovies.css'
 
 function SavedMovies({
   isLoading,
-  onSubmitSearch,
+  // onSubmitSearch,
   movies,
   setPreloader,
   moviesSearchResponse,
   toggleMovieLike,
   checkBookmarkStatus,
   sortShortMovies,
-  removeMovies
+  removeMovies,
+  searchKeyword,
 }) {
+  const [searchedMovies, setSearchedMovies] = useState('')
+  const [isChecked, setIsChecked] = useState(false)
   const [shortMovies, setShortMovies] = useState([]);
-  const [isChecked, setIsChecked] = useState(false);
+  function onCheckboxToggle() {
+    setIsChecked(!isChecked)
+  }
 
   useEffect(() => {
     if (isChecked) {
@@ -23,38 +28,51 @@ function SavedMovies({
     }
   }, [isChecked]);
 
+
+  const searchSavedMovies = useMemo(
+    () =>
+      movies.filter(i =>
+        i.nameRU.toLowerCase().includes(searchedMovies.toLowerCase())
+      ),
+    [movies, searchedMovies]
+  )
+
   return (
-    <section className='saved-movies'>
+    <section className="saved-movies">
       <SearchForm
-        handleSearch={onSubmitSearch}
+        handleSearch={setSearchedMovies}
         setPreloader={setPreloader}
-        setIsChecked={setIsChecked}
-        isLoading={isLoading}
+        // isLoading={isLoading}
+        onCheckboxToggle={onCheckboxToggle}
+        isChecked={isChecked}
+        searchKeyword={searchKeyword}
       />
       {moviesSearchResponse
-        ? movies.length === 0 && (
-            <p className='movie__response'>{moviesSearchResponse}</p>
+        ? searchSavedMovies.length === 0 && (
+            <p className="movie__response">{moviesSearchResponse}</p>
           )
-        : movies.length === 0 && (
-            <p className='movie__response'>Нет сохраненных фильмов</p>
+        : searchSavedMovies.length === 0 && (
+            <p className="movie__response">Нет сохраненных фильмов</p>
           )}
 
-      {isChecked && movies.length !== 0 && shortMovies.length === 0 && (
-        <p className='movie__response'>Среди фильмов нет короткометражек</p>
+      {isChecked && searchSavedMovies.length !== 0 && shortMovies.length === 0 && (
+        <p className="movie__response">Среди фильмов нет короткометражек</p>
       )}
 
       {movies.length !== 0 && (
         <MoviesCardList
-          movies={isChecked ? shortMovies : movies}
+          movies={
+            isChecked ? sortShortMovies(searchSavedMovies) : searchSavedMovies
+          }
           toggleMovieLike={toggleMovieLike}
           checkBookmarkStatus={checkBookmarkStatus}
           isSavedPage={true}
-          isLoading={isLoading}
+          // isLoading={isLoading}
           handleDelete={removeMovies}
         />
       )}
     </section>
-  );
+  )
 }
 
-export default SavedMovies;
+export default SavedMovies

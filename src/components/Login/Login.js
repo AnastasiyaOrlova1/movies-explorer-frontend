@@ -1,62 +1,67 @@
-import React from 'react';
-import Auth from '../Auth/Auth';
-import { useFormWithValidation } from '../../hooks/useValidationForm/useFormValidation';
-import Preloader from '../Preloader/Preloader';
-import "./Login.css";
+import React from 'react'
+import Auth from '../Auth/Auth'
+import { useFormWithValidation } from '../../hooks/useValidationForm/useFormValidation'
+import Preloader from '../Preloader/Preloader'
+import './Login.css'
 
 function Login({ onLogin, isLoading }) {
   const { values, errors, isValid, handleChange, resetForm } =
-  useFormWithValidation({});
+    useFormWithValidation({})
 
   function handleOnSubmit(evt) {
-    evt.preventDefault();
-    onLogin(values.email, values.password);
-    resetForm();
-}
+    evt.preventDefault()
+    onLogin(values.email, values.password)
+    resetForm()
+  }
 
   return (
     <Auth
-      title='Рады видеть!'
-      name='sign-in'
-      textButton='Войти'
+      title="Рады видеть!"
+      name="sign-in"
+      textButton="Войти"
       onSubmit={handleOnSubmit}
       isDisabled={!isValid}
     >
-      {isLoading && <Preloader/>}
-      <label className='auth__label'>
+      {isLoading && <Preloader />}
+      <label className="auth__label">
         E-mail
         <input
-          id='email'
-          type='email'
-          name='email'
-          placeholder='E-mail'
+          id="email"
+          type="email"
+          name="email"
+          placeholder="E-mail"
           className={`auth__input ${errors.email && 'auth__input-invalid'}`}
-          minLength='1'
-          maxLength='40'
+          minLength="1"
+          maxLength="40"
           required
           onChange={handleChange}
-          value={values.email || ""}
+          value={values.email || ''}
+          pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
         />
-        <span id='input-error' className='error-text'>{errors.email}</span>
+        <span id="input-error" className="error-text">
+          {errors.email}
+        </span>
       </label>
-      <label className='auth__label'>
+      <label className="auth__label">
         Пароль
         <input
-          id='password'
-          type='password'
-          name='password'
-          placeholder='Пароль'
+          id="password"
+          type="password"
+          name="password"
+          placeholder="Пароль"
           className={`auth__input ${errors.password && 'auth__input-invalid'}`}
-          minLength='3'
-          maxLength='20'
+          minLength="3"
+          maxLength="20"
           required
           onChange={handleChange}
-          value={values.password || ""}
+          value={values.password || ''}
         />
-        <span id='input-error' className='error-text'>{errors.password}</span>
+        <span id="input-error" className="error-text">
+          {errors.password}
+        </span>
       </label>
     </Auth>
-  );
+  )
 }
 
-export default Login;
+export default Login

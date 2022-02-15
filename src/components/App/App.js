@@ -1,17 +1,18 @@
-import Header from '../Header/Header';
-import Main from '../Main/Main';
-import Footer from '../Footer/Footer';
-import Movies from '../Movies/Movies';
-import SavedMovies from '../SavedMovies/SavedMovies';
-import Register from '../Register/Register';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
+import Header from '../Header/Header'
+import Main from '../Main/Main'
+import Footer from '../Footer/Footer'
+import Movies from '../Movies/Movies'
+import SavedMovies from '../SavedMovies/SavedMovies'
+import Register from '../Register/Register'
+//import { useState, useEffect } from 'react';
 import {
   useHistory,
   Route,
   Switch,
   useLocation,
   Redirect,
-} from 'react-router-dom';
+} from 'react-router-dom'
 import {
   createProfile,
   login,
@@ -20,7 +21,7 @@ import {
   createMovie,
   deleteMovie,
   getUserMovies,
-} from '../../utils/MainApi';
+} from '../../utils/MainApi'
 import {
   CONFLICT_EMAIL_MESSAGE,
   INVALID_DATA_MESSAGE,
@@ -30,167 +31,172 @@ import {
   MOVIES_NOT_FOUND_MESSAGE,
   SAVED_MOVIE_NOT_FOUND_MESSAGE,
   SUCCSESS_UPDATE_MESSAGE,
-} from '../../utils/responseMessages';
-import { DURATION_FOR_SORTING_SHORT_FILM } from '../../utils/constants';
-import Login from '../Login/Login';
-import Profile from '../Profile/Profile';
-import { getMovies } from '../../utils/MoviesApi';
-import { CurrentUserContext } from '../../contexts/CurrentUserContext';
-import ProtectedRoute from '../ProtectedRoute/ProtectedRoute';
-import NotFound from '../NotFound/NotFound';
-import Tooltip from '../Tooltip/Tooltip';
-import "./App.css";
+} from '../../utils/responseMessages'
+import { DURATION_FOR_SORTING_SHORT_FILM } from '../../utils/constants'
+import Login from '../Login/Login'
+import Profile from '../Profile/Profile'
+import { getMovies } from '../../utils/MoviesApi'
+import { CurrentUserContext } from '../../contexts/CurrentUserContext'
+import ProtectedRoute from '../ProtectedRoute/ProtectedRoute'
+import NotFound from '../NotFound/NotFound'
+import Tooltip from '../Tooltip/Tooltip'
+import './App.css'
 
 function App() {
   const [currentUser, setCurrentUser] = useState({
     name: '',
     email: '',
-  });
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [tooltipStatus, setTooltipStatus] = useState(false);
-  const [tooltipMessage, setTooltipMessage] = useState('');
-  const [apiResponseMessage, setResponseMessage] = useState(' ');
-  const [allMovies, setAllmovies] = useState([]);
-  const [searchMoviesResult, setSearchMoviesResult] = useState([]);
-  const [savedMovies, setSavedMovies] = useState([]);
-  const [savedMoviesSearchResult, setSavedMoviesSearchResult] =useState([]);
-  const [moviesSearchResponse, setMoviesSearchResponse] = useState('');
-  const [savedMoviesSearchResponse, setSavedMoviesSearchResponse] =
-    useState('');
-  const history = useHistory();
-  let location = useLocation().pathname;
+  })
+  const [loggedIn, setLoggedIn] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [tooltipStatus, setTooltipStatus] = useState(false)
+  const [tooltipMessage, setTooltipMessage] = useState('')
+  const [apiResponseMessage, setResponseMessage] = useState(' ')
+  const [allMovies, setAllmovies] = useState([])
+  const [searchMoviesResult, setSearchMoviesResult] = useState([])
+  const [savedMovies, setSavedMovies] = useState([])
+  const [savedMoviesSearchResult, setSavedMoviesSearchResult] = useState([])
+  const [moviesSearchResponse, setMoviesSearchResponse] = useState('')
+  const [savedMoviesSearchResponse, setSavedMoviesSearchResponse] = useState('')
+
+  const [searchKeyword, setSearchKeyword] = React.useState(
+    localStorage.getItem('searchKeyword') || ''
+  )
+
+  const history = useHistory()
+  let location = useLocation().pathname
 
   function tokenCheck() {
-    const token = localStorage.getItem('jwt');
+    const token = localStorage.getItem('jwt')
     if (token) {
       getUser(token)
-        .then((res) => {
+        .then(res => {
           if (res) {
-            setLoggedIn(true);
-            setCurrentUser(res);
-            history.push(location);
+            setLoggedIn(true)
+            setCurrentUser(res)
+            history.push(location)
           }
         })
-        .catch((err) => {
-          console.log(err);
-          localStorage.removeItem('token');
-          history.push('/');
-        });
+        .catch(err => {
+          console.log(err)
+          localStorage.removeItem('token')
+          history.push('/')
+        })
     }
   }
 
   function handleRegister({ name, email, password }) {
-    setIsLoading(true);
+    setIsLoading(true)
     createProfile(name, email, password)
-      .then((res) => {
+      .then(res => {
         if (res) {
-          handleLogin(email, password);
-          setCurrentUser(res);
-          history.push('/movies');
+          handleLogin(email, password)
+          setCurrentUser(res)
+          history.push('/movies')
         }
       })
-      .catch((err) => {
+      .catch(err => {
         if (err === 'Error 400') {
-          return showResponseMessageTimer(INVALID_DATA_MESSAGE);
+          return showResponseMessageTimer(INVALID_DATA_MESSAGE)
         }
         if (err === 'Error 409') {
-          return showResponseMessageTimer(CONFLICT_EMAIL_MESSAGE);
+          return showResponseMessageTimer(CONFLICT_EMAIL_MESSAGE)
         }
         if (err === 'Error 500') {
-          return showResponseMessageTimer(SERVER_ERROR_MESSAGE);
+          return showResponseMessageTimer(SERVER_ERROR_MESSAGE)
         }
-        console.log(err);
+        console.log(err)
       })
       .finally(() => {
-        setIsLoading(false);
-        setSavedMoviesSearchResult([]);
-      });
+        setIsLoading(false)
+        setSavedMoviesSearchResult([])
+      })
   }
 
   function handleLogin(email, password) {
-    setIsLoading(true);
+    setIsLoading(true)
     login(email, password)
-      .then((res) => {
+      .then(res => {
         if (res.token) {
-          localStorage.setItem('jwt', res.token);
-          setLoggedIn(true);
-          history.push('/movies');
+          localStorage.setItem('jwt', res.token)
+          setLoggedIn(true)
+          history.push('/movies')
         }
       })
-      .catch((err) => {
+      .catch(err => {
         if (err === 'Error 400') {
-          return showResponseMessageTimer(INVALID_DATA_MESSAGE);
+          return showResponseMessageTimer(INVALID_DATA_MESSAGE)
         }
         if (err === 'Error 401') {
-          return showResponseMessageTimer(AUTH_DATA_ERROR_MESSAGE);
+          return showResponseMessageTimer(AUTH_DATA_ERROR_MESSAGE)
         }
         if (err === 'Error 500') {
-          console.log(SERVER_ERROR_MESSAGE);
-          return showResponseMessageTimer(SERVER_ERROR_MESSAGE);
+          console.log(SERVER_ERROR_MESSAGE)
+          return showResponseMessageTimer(SERVER_ERROR_MESSAGE)
         }
-        console.log(err);
+        console.log(err)
       })
       .finally(() => {
-        setIsLoading(false);
-        setSavedMoviesSearchResult([]);
-      });
+        setIsLoading(false)
+        setSavedMoviesSearchResult([])
+      })
   }
 
-  function handleUpdateUser({name, email}) {
-    setIsLoading(true);
-    updateProfile(name,email)
-      .then((res) => {
+  function handleUpdateUser({ name, email }) {
+    setIsLoading(true)
+    updateProfile(name, email)
+      .then(res => {
         if (res) {
-          setCurrentUser(res);
-          showResponseMessageTimer(SUCCSESS_UPDATE_MESSAGE);
+          setCurrentUser(res)
+          showResponseMessageTimer(SUCCSESS_UPDATE_MESSAGE)
         }
       })
-      .catch((err) => {
-        showResponseMessageTimer(SERVER_ERROR_MESSAGE);
-        console.log(err);
+      .catch(err => {
+        showResponseMessageTimer(SERVER_ERROR_MESSAGE)
+        console.log(err)
       })
       .finally(() => {
-        setIsLoading(false);
-        setTooltipStatus(true);
-        setTooltipMessage(SUCCSESS_UPDATE_MESSAGE);
-      });
+        setIsLoading(false)
+        setTooltipStatus(true)
+        setTooltipMessage(SUCCSESS_UPDATE_MESSAGE)
+      })
   }
 
   function handleLogOut() {
-    localStorage.removeItem('jwt');
-    localStorage.removeItem('movies');
-    localStorage.removeItem('searchResult');
-    setCurrentUser({ name: '', email: '' });
-    setAllmovies([]);
-    setSearchMoviesResult([]);
-    setMoviesSearchResponse([]);
-    setSavedMovies([]);
-    setLoggedIn(false);
-    history.push('/');
+    localStorage.removeItem('jwt')
+    localStorage.removeItem('movies')
+    localStorage.removeItem('searchResult')
+    localStorage.removeItem('searchKeyword')
+    setCurrentUser({ name: '', email: '' })
+    setAllmovies([])
+    setSearchMoviesResult([])
+    setMoviesSearchResponse([])
+    setSavedMovies([])
+    setLoggedIn(false)
+    history.push('/')
   }
 
   function showResponseMessageTimer(error) {
-    setResponseMessage(error);
-    setTimeout(() => setResponseMessage(''), 10000);
+    setResponseMessage(error)
+    setTimeout(() => setResponseMessage(''), 10000)
   }
 
   function getBeatMovies() {
-    setIsLoading(true);
+    setIsLoading(true)
     getMovies()
-      .then((data) => {
-        const moviesArray = data.map((item) => {
+      .then(data => {
+        const moviesArray = data.map(item => {
           const imageURL = item.image
             ? `https://api.nomoreparties.co${item.image.url}`
-            : 'image not found';
+            : 'image not found'
           const thumbnailURL = item.image
             ? `https://api.nomoreparties.co${item.image.formats.thumbnail.url}`
-            : 'image not found';
+            : 'image not found'
           //const noAdaptedName = item.nameEN ? item.nameEN : item.nameRU;
-          const noAdaptedNameEn = item.nameEN ? item.nameEN :'none';
-          const noAdaptedNameRu = item.nameRU ? item.nameRU :'none';
+          const noAdaptedNameEn = item.nameEN ? item.nameEN : 'none'
+          const noAdaptedNameRu = item.nameRU ? item.nameRU : 'none'
 
-          const countryValue = item.country ? item.country : 'none';
+          const countryValue = item.country ? item.country : 'none'
           return {
             country: countryValue,
             director: item.director,
@@ -203,117 +209,110 @@ function App() {
             movieId: item.id,
             nameRU: noAdaptedNameRu,
             nameEN: noAdaptedNameEn,
-          };
-        });
-        localStorage.setItem('movies', JSON.stringify(moviesArray));
+          }
+        })
+        localStorage.setItem('movies', JSON.stringify(moviesArray))
       })
-      .catch((err) => {
-        setMoviesSearchResponse(MOVIES_SERVER_ERROR_MESSAGE);
-        console.log(err);
+      .catch(err => {
+        setMoviesSearchResponse(MOVIES_SERVER_ERROR_MESSAGE)
+        console.log(err)
       })
       .finally(() => {
-        setIsLoading(false);
-      });
+        setIsLoading(false)
+      })
   }
 
   function getFavoriteMovies() {
     getUserMovies()
-      .then((favouriteMovies) => {
-        setSavedMovies(favouriteMovies);
+      .then(favouriteMovies => {
+        setSavedMovies(favouriteMovies)
       })
-      .catch((error) => {
-        setMoviesSearchResponse(MOVIES_SERVER_ERROR_MESSAGE);
-        console.log(error);
-      });
+      .catch(error => {
+        setMoviesSearchResponse(MOVIES_SERVER_ERROR_MESSAGE)
+        console.log(error)
+      })
   }
 
   function search(data, keyword) {
-    const result = data.filter((movie) => {
+    const result = data.filter(movie => {
       return (
         movie.nameRU.toLowerCase().includes(keyword.toLowerCase()) ||
         movie.nameEN.toLowerCase().includes(keyword.toLowerCase()) ||
         movie.description.toLowerCase().includes(keyword.toLowerCase())
-      );
-    });
+      )
+    })
     if (result.length === 0 && location === '/movies') {
-      setMoviesSearchResponse(MOVIES_NOT_FOUND_MESSAGE);
+      setMoviesSearchResponse(MOVIES_NOT_FOUND_MESSAGE)
     }
     if (result.length === 0 && location === '/saved-movies') {
-      setSavedMoviesSearchResponse(SAVED_MOVIE_NOT_FOUND_MESSAGE);
+      setSavedMoviesSearchResponse(SAVED_MOVIE_NOT_FOUND_MESSAGE)
     }
-    return result;
+    return result
   }
 
   function sortShortMovies(movies) {
     const shortMoviesArray = movies.filter(
-      (movie) => movie.duration <= DURATION_FOR_SORTING_SHORT_FILM
-    );
-    return shortMoviesArray;
+      movie => movie.duration <= DURATION_FOR_SORTING_SHORT_FILM
+    )
+    return shortMoviesArray
   }
 
   function submitSearch(keyword) {
-    getBeatMovies();
-    setTimeout(() => setIsLoading(false), 3000);
-    setSearchMoviesResult(search(allMovies, keyword));
+    getBeatMovies()
+    setSearchMoviesResult(search(allMovies, keyword))
     localStorage.setItem(
       'searchResult',
       JSON.stringify(search(allMovies, keyword))
-    );
+    )
+    localStorage.setItem('searchKeyword', keyword)
+    setSearchKeyword(keyword)
   }
 
   function submitFavoriteSearch(keyword) {
-    setTimeout(() => setIsLoading(false), 3000);
-    setSavedMovies(search(savedMovies, keyword));
+    setSavedMovies(search(savedMovies, keyword))
   }
 
   function addMovie(movie) {
-    const savedMovie = savedMovies.find((m) => m.nameRU === movie.nameRU);
+    const savedMovie = savedMovies.find(m => m.nameRU === movie.nameRU)
     if (savedMovie) {
-      removeMovies(savedMovie);
+      removeMovies(savedMovie)
     } else {
-    createMovie(movie)
-      .then((data) => {
-        const movies = [...savedMovies, data];
-        setSavedMovies((prev) => [...prev, data]);
-        localStorage.setItem('savedMovies', JSON.stringify(movies));
-      })
-      .catch((err) => console.log(`Error: ${err}`));
+      createMovie(movie)
+        .then(data => {
+          const movies = [...savedMovies, data]
+          setSavedMovies(prev => [...prev, data])
+          localStorage.setItem('savedMovies', JSON.stringify(movies))
+        })
+        .catch(err => console.log(`Error: ${err}`))
     }
   }
-  
+
   function removeMovies(movie) {
-    const movieId = savedMovies.find(
-      (item) => item.movieId === movie.movieId
-    );
-    console.log(movieId._id);
+    const movieId = savedMovies.find(item => item.movieId === movie.movieId)
+    console.log(movieId._id)
     deleteMovie(movieId._id)
-      .then((res) => {
-        getFavoriteMovies();
-        console.log(res.message);
+      .then(res => {
+        getFavoriteMovies()
+        console.log(res.message)
       })
-      .catch((err) => console.log(err));
-      console.log(movie.movieId);
+      .catch(err => console.log(err))
+    console.log(movie.movieId)
   }
 
   function checkBookmarkStatus(movie) {
-    return savedMovies.some(
-      (savedMovie) => savedMovie.movieId === movie.movieId
-    );
+    return savedMovies.some(savedMovie => savedMovie.movieId === movie.movieId)
   }
 
   function toggleMovieLike(movie, isLiked) {
-    isLiked ? removeMovies(movie) : addMovie(movie);
-    console.log(movie);
-    console.log(movie.movieId);
-
-
+    isLiked ? removeMovies(movie) : addMovie(movie)
+    console.log(movie)
+    console.log(movie.movieId)
   }
 
-
   useEffect(() => {
-    const token = localStorage.getItem('jwt');
+    const token = localStorage.getItem('jwt')
     if (!token) {
-      return;
+      return
     } else {
       Promise.all([getUser(token), getFavoriteMovies()])
         .then(([userData, favoriteMovieData]) => {
@@ -321,65 +320,64 @@ function App() {
             ...currentUser,
             name: userData.name,
             email: userData.email,
-          });
+          })
         })
-        .catch((err) => {
-          console.log(err);
-        });
+        .catch(err => {
+          console.log(err)
+        })
     }
-  }, [loggedIn]);
+  }, [loggedIn])
 
   useEffect(() => {
-    const movies = JSON.parse(localStorage.getItem('movies'));
+    const movies = JSON.parse(localStorage.getItem('movies'))
     if (movies) {
-      setAllmovies(movies);
-      const searchResult = JSON.parse(localStorage.getItem('searchResult'));
+      setAllmovies(movies)
+      const searchResult = JSON.parse(localStorage.getItem('searchResult'))
+
       if (searchResult) {
-        setSearchMoviesResult(searchResult);
+        setSearchMoviesResult(searchResult)
       }
     } else {
-      getBeatMovies();
+      getBeatMovies()
     }
-  }, [loggedIn]);
+  }, [loggedIn])
 
   useEffect(() => {
-    tokenCheck();
-  }, [history]);
-
-
+    tokenCheck()
+  }, [history])
 
   function closeAllPopups() {
-    setTooltipStatus(false);
-    setTooltipMessage('');
+    setTooltipStatus(false)
+    setTooltipMessage('')
   }
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
-      <div className='App'>
+      <div className="App">
         <Header loggedIn={loggedIn} />
         <Switch>
-          <Route exact path='/'>
+          <Route exact path="/">
             <Main loggedIn={loggedIn} />
           </Route>
-          <Route path='/signup'>
+          <Route path="/signup">
             {loggedIn ? (
-              <Redirect to='/movies' />
+              <Redirect to="/movies" />
             ) : (
               <Register onRegister={handleRegister} isLoading={isLoading} />
             )}
           </Route>
-          <Route path='/signin'>
+          <Route path="/signin">
             {loggedIn ? (
-              <Redirect to='/movies' />
+              <Redirect to="/movies" />
             ) : (
               <Login onLogin={handleLogin} isLoading={isLoading} />
             )}
           </Route>
-          <Route exact path='/'>
-            {loggedIn ? <Redirect to='/movies' /> : <Redirect to='/' />}
+          <Route exact path="/">
+            {loggedIn ? <Redirect to="/movies" /> : <Redirect to="/" />}
           </Route>
           <ProtectedRoute
-            path='/movies'
+            path="/movies"
             loggedIn={loggedIn}
             component={Movies}
             isLoading={isLoading}
@@ -391,9 +389,10 @@ function App() {
             toggleMovieLike={toggleMovieLike}
             checkBookmarkStatus={checkBookmarkStatus}
             onDelete={removeMovies}
+            searchKeyword={searchKeyword}
           />
           <ProtectedRoute
-            path='/saved-movies'
+            path="/saved-movies"
             loggedIn={loggedIn}
             component={SavedMovies}
             isLoading={isLoading}
@@ -406,16 +405,17 @@ function App() {
             toggleMovieLike={toggleMovieLike}
             checkBookmarkStatus={checkBookmarkStatus}
             onLikeClick={removeMovies}
+            searchKeyword={searchKeyword}
           />
           <ProtectedRoute
-            path='/profile'
+            path="/profile"
             loggedIn={loggedIn}
             component={Profile}
             apiResponseMessage={apiResponseMessage}
             onEditProfile={handleUpdateUser}
             onLogOut={handleLogOut}
           />
-          <Route path='*'>
+          <Route path="*">
             <NotFound />
           </Route>
         </Switch>
@@ -428,7 +428,7 @@ function App() {
         />
       </div>
     </CurrentUserContext.Provider>
-  );
+  )
 }
 
-export default App;
+export default App
