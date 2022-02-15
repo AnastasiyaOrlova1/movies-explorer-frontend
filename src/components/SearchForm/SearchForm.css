@@ -12,6 +12,7 @@
   flex-direction: column;
   align-items: center;
   box-sizing: border-box;
+  max-width: 1140px;
 }
 
 .search-form__film-container {
@@ -53,7 +54,7 @@
 .search-form__film-input::placeholder {
   font-size: 14px;
   line-height: 20px;
-  color: #A0A0A0;
+  color: #8B8B8B;
 }
 
 .search-form__film-find {

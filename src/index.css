@@ -1,5 +1,6 @@
 @import url(../src/vendor/normalize.css);
 @import url(../src/vendor/fonts/fonts.css);
+@import url(./vendor/hover.css);
 html {
   scroll-behavior: smooth;
 }

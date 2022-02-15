@@ -1,38 +1,37 @@
-import "./Header.css";
-import logo from "../../images/header__logo.svg";
-import { NavLink, Link } from "react-router-dom";
-import Navigation from "../Navigation/Navigation";
+import React from 'react';
+import headerLogo from '../../images/header__logo.svg';
+import Navigation from '../Navigation/Navigation';
+import { useLocation, Link, NavLink } from 'react-router-dom';
+import './Header.css';
 
-export default function Header(props) {
-  const headerClassName = `${props.isSign ? "header_hidden" : "header"}`;
-
-  function handleSign() {
-    props.onSign();
-  }
+function Header({ loggedIn }) {
+  const location = useLocation();
 
   return (
-    <header className={`${headerClassName}`}>
+    <header
+      className={`header ${
+        (location.pathname === '/signup' && 'auth-no-display') ||
+        (location.pathname === '/signin' && 'auth-no-display') ||
+        (location.pathname === '*' && 'auth-no-display')
+      }`}
+    >
       <NavLink exact to="/">
-        <img className="header__logo logo" src={logo} alt="Movies Explorer logo" />
+      <img src={headerLogo} alt='logo' />
       </NavLink>
-      {props.loggedIn ? (
-        <>
-          <Navigation onOpenBurgerClick={props.onOpenBurgerClick} onCloseBurgerClick={props.onCloseBurgerClick} isBurgerMenuOpened={props.isBurgerMenuOpened} isOpen={props.isOpen} />
-        </>
+      {loggedIn ? (
+        <Navigation />
       ) : (
-          <>
-            <section className="header__unathorized">
-              <Link to="/sign-up" onClick={handleSign}>
-                <button className="button header__regiter-button">
-                  Регистрация
-              </button>
-              </Link>
-              <Link to="/sign-in" onClick={handleSign}>
-                <button className="button header__login-button">Войти</button>
-              </Link>
-            </section>
-          </>
-        )}
+        <div className='header__container'>
+            <Link className='header__link hover' to='/signup'>
+            Регистрация
+            </Link>
+            <Link className='header__button hover' to='/signin'>
+            Войти
+            </Link>
+        </div>
+      )}
     </header>
   );
 }
+
+export default Header;

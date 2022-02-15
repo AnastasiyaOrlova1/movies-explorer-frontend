@@ -1,36 +1,116 @@
-import React from "react";
-import { useLocation } from 'react-router-dom';
+import React from 'react';
+import MoviesCard from '../MoviesCard/MoviesCard';
+import { useEffect, useState } from 'react';
+import Preloader from '../Preloader/Preloader';
+import {
+  LARGE_SCREEN_RESOLUTION,
+  MEDIUM_SCREEN_RESOLUTION,
+  MAX_NUMBER_MOVIES,
+  MID_NUMBER_MOVIES,
+  MIN_NUMBER_MOVIES,
+  ADD_MAX_NUMBER_MOVIES,
+  ADD_MIN_NUMBER_MOVIES,
+} from '../../utils/constants';
 import "./MoviesCardList.css";
-import MoviesCard from "../MoviesCard/MoviesCard.js";
 
+function MoviesCardList({
+  movies,
+  toggleMovieLike,
+  checkBookmarkStatus,
+  isSavedPage,
+  isLoading,
+  removeMovies
+}) {
+  const [extraPortion, setExtraPortion] = useState(3);
+  const [currentCount, setCurrenCount] = useState(0);
+  const [renderMovies, setRenderMovies] = useState([]);
 
-export default function MoviesCardList(props) {
+  function getCount(windowSize) {
+    if (windowSize > LARGE_SCREEN_RESOLUTION) {
+      return { first: MAX_NUMBER_MOVIES, extra: ADD_MAX_NUMBER_MOVIES };
+    } else if (
+      windowSize > MEDIUM_SCREEN_RESOLUTION &&
+      windowSize <= LARGE_SCREEN_RESOLUTION
+    ) {
+      return { first: MID_NUMBER_MOVIES, extra: ADD_MIN_NUMBER_MOVIES };
+    } else {
+      return { first: MIN_NUMBER_MOVIES, extra: ADD_MIN_NUMBER_MOVIES };
+    }
+  }
 
-  const { pathname } = useLocation();
+  function renderExtraPortion() {
+    const count = Math.min(movies.length, currentCount + extraPortion);
+    const extraMovies = movies.slice(currentCount, count);
+    setRenderMovies([...renderMovies, ...extraMovies]);
+    setCurrenCount(count);
+  }
+
+  function handleResize() {
+    const windowSize = window.innerWidth;
+    const sizePortion = getCount(windowSize);
+    setExtraPortion(sizePortion.extra);
+  }
+
+useEffect(() => {
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  useEffect(() => {
+    const windowSize = window.innerWidth;
+    const sizePortion = getCount(windowSize);
+    setExtraPortion(sizePortion.extra);
+    const count = Math.min(movies.length, sizePortion.first);
+    setRenderMovies(movies.slice(0, count));
+    setCurrenCount(count);
+  }, [movies]);
+
+  function handleMoreCards() {
+    renderExtraPortion();
+  }
+
   return (
-    <section className="movies-card-list">
-      <section className="movies-card-list__elements">
-        {pathname === '/movies' && <MoviesCard filePath={require('../../images/test-pic1.png').default} title={`33 слова о дизайне`} />}
-        {pathname === '/movies' && <MoviesCard filePath={require('../../images/test-pic2.png').default} title={`Киноальманах «100 лет дизайна»`} />}
-        {pathname === '/movies' && <MoviesCard filePath={require('../../images/test-pic3.png').default} title={`В погоне за Бенкси`} />}
-        {pathname === '/movies' && <MoviesCard filePath={require('../../images/test-pic4.png').default} title={`Баския: Взрыв реальности`} />}
-        {pathname === '/movies' && <MoviesCard filePath={require('../../images/test-pic5.png').default} title={`Бег это свобода`} />}
-        {pathname === '/movies' && <MoviesCard filePath={require('../../images/test-pic6.png').default} title={`Книготорговцы`} />}
-        {pathname === '/movies' && <MoviesCard filePath={require('../../images/test-pic7.png').default} title={`Когда я думаю о Германии ночью`} />}
-        {pathname === '/movies' && <MoviesCard filePath={require('../../images/test-pic8.png').default} title={`Gimme Danger: История Игги и The Stooges`} />}
-        {pathname === '/movies' && <MoviesCard filePath={require('../../images/test-pic9.png').default} title={`Дженис: Маленькая девочка грустит`} />}
-        {pathname === '/movies' && <MoviesCard filePath={require('../../images/test-pic10.png').default} title={`Собраться перед прыжком`} />}
-        {pathname === '/movies' && <MoviesCard filePath={require('../../images/test-pic11.png').default} title={`Пи Джей Харви: A dog called money`}/>}
-        {pathname === '/movies' && <MoviesCard filePath={require('../../images/test-pic12.png').default} title={`По волнам: Искусство звука в кино`} />}
-        {pathname === '/movies' && <MoviesCard filePath={require('../../images/test-pic13.png').default} title={`Рудбой`} />}
-        {pathname === '/movies' && <MoviesCard filePath={require('../../images/test-pic14.png').default} title={`Скейт - кухня`} />}
-        {pathname === '/movies' && <MoviesCard filePath={require('../../images/test-pic15.png').default} title={`Война искусств`} />}
-        {pathname === '/movies' && <MoviesCard filePath={require('../../images/test-pic16.png').default} title={`Зона`} />}
-        {pathname === '/saved-movies' && <MoviesCard filePath={require('../../images/test-pic1.png').default} title={`33 слова о дизайне`} isOwn={props.isOwn} onCardDelete={props.onCardDelete}/>}
-        {pathname === '/saved-movies' && <MoviesCard filePath={require('../../images/test-pic2.png').default} title={`Киноальманах «100 лет дизайна»`} isOwn={props.isOwn} onCardDelete={props.onCardDelete}/>}
-        {pathname === '/saved-movies' && <MoviesCard filePath={require('../../images/test-pic3.png').default} title={`В погоне за Бенкси`} isOwn={props.isOwn} onCardDelete={props.onCardDelete}/>}
-      </section>
-      <button className="movies-card-list__more-button button">Ещё</button>
+    <section className='movies-card-list'>
+      {isLoading && <Preloader/>}
+      <div className='movies-card-list__container'>
+        <div className='movies-card-list__grid'>
+          {isSavedPage &&
+            movies.map((movie) => (
+              <MoviesCard
+                key={movie.movieId}
+                movie={movie}
+                onLikeClick={toggleMovieLike}
+                checkBookmarkStatus={checkBookmarkStatus}
+              />
+            ))}
+
+          {!isSavedPage &&
+            renderMovies.map((movie) => (
+              <MoviesCard
+                key={movie.movieId}
+                movie={movie}
+                onLikeClick={toggleMovieLike}
+            
+                checkBookmarkStatus={checkBookmarkStatus}
+                
+              />
+            ))}
+        </div>
+        {!isSavedPage && currentCount < movies.length && (
+          <button
+            className='movies-card-list__btn-more hover'
+            type='button'
+            onClick={handleMoreCards}
+          >
+            Ещё
+          </button>
+        )}
+      </div>
     </section>
   );
 }
+
+export default MoviesCardList;

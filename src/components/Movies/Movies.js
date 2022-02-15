@@ -1,26 +1,68 @@
-import React from "react";
-import "./Movies.css";
-import SearchForm from "../SearchForm/SearchForm.js";
-import MoviesCardList from "../MoviesCardList/MoviesCardList.js";
-import Preloader from "../Preloader/Preloader.js";
+import React, { useEffect, useState } from 'react'
+import SearchForm from '../SearchForm/SearchForm'
+import MoviesCardList from '../MoviesCardList/MoviesCardList'
+import './Movies.css'
 
-export default function Movies() {
-  const [isLiked, setIsLiked] = React.useState(false);
+function Movies({
+  isLoading,
+  onSubmitSearch,
+  movies,
+  setPreloader,
+  moviesSearchResponse,
+  toggleMovieLike,
+  checkBookmarkStatus,
+  sortShortMovies,
+  searchKeyword,
+}) {
+  const [isChecked, setIsChecked] = useState(false)
+  const [isShortMovies, setIsShortMovies] = useState(false)
 
-  function handleCardLike() {
-    if (isLiked === false) {
-      setIsLiked(true);
-    } else {
-      setIsLiked(false);
-    }
+  function onCheckboxToggle() {
+    setIsChecked(!isChecked)
+    localStorage.setItem('shortFilms', !isChecked)
   }
+
+  useEffect(() => {
+    const shortFilms = localStorage.getItem('shortFilms')
+
+    if (shortFilms === 'true') {
+      setIsShortMovies(isShortMovies)
+      setIsChecked(true)
+    }
+  }, [])
 
   return (
     <section className="movies">
-      <SearchForm />
-      <Preloader />
-      <MoviesCardList isLiked={isLiked} onCardLike={handleCardLike} />
+      <SearchForm
+        handleSearch={onSubmitSearch}
+        setPreloader={setPreloader}
+        // isLoading={isLoading}
+        searchKeyword={searchKeyword}
+        isChecked={isChecked}
+        onCheckboxToggle={onCheckboxToggle}
+      />
+      {moviesSearchResponse
+        ? movies.length === 0 && (
+            <p className="movie__response">{moviesSearchResponse}</p>
+          )
+        : movies.length === 0 && (
+            <p className="movie__response">Введите запрос</p>
+          )}
 
+      {isChecked && movies.length !== 0 && movies.length === 0 && (
+        <p className="movie__response">Среди фильмов нет короткометражек</p>
+      )}
+
+      {movies.length !== 0 && (
+        <MoviesCardList
+          movies={isChecked ? sortShortMovies(movies) : movies}
+          toggleMovieLike={toggleMovieLike}
+          checkBookmarkStatus={checkBookmarkStatus}
+          // isLoading={isLoading}
+        />
+      )}
     </section>
-  );
+  )
 }
+
+export default Movies

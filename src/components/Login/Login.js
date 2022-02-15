@@ -1,55 +1,67 @@
-import React from 'react';
-import "../Register/Register.css";
-import logo from "../../images/header__logo.svg";
-import { NavLink, Link } from "react-router-dom";
+import React from 'react'
+import Auth from '../Auth/Auth'
+import { useFormWithValidation } from '../../hooks/useValidationForm/useFormValidation'
+import Preloader from '../Preloader/Preloader'
+import './Login.css'
 
-export default function Register(props) {
-  function handleLogin() {
-    props.onLogin();
+function Login({ onLogin, isLoading }) {
+  const { values, errors, isValid, handleChange, resetForm } =
+    useFormWithValidation({})
+
+  function handleOnSubmit(evt) {
+    evt.preventDefault()
+    onLogin(values.email, values.password)
+    resetForm()
   }
 
   return (
-    <section className="sign">
-      <NavLink exact to="/">
-        <img className="sign__logo logo" src={logo} alt="Movies Explorer" />
-      </NavLink>
-      <h1 className="sign__title">Рады видеть!</h1>
-      <form className="sign__form" method="PATCH" action="#">
-        <span className="sign__input-heading">E-mail</span>
+    <Auth
+      title="Рады видеть!"
+      name="sign-in"
+      textButton="Войти"
+      onSubmit={handleOnSubmit}
+      isDisabled={!isValid}
+    >
+      {isLoading && <Preloader />}
+      <label className="auth__label">
+        E-mail
         <input
           id="email"
-          name="email"
-          autoComplete="off"
           type="email"
-          className="sign__input"
-          placeholder="Email"
-          minLength="9"
+          name="email"
+          placeholder="E-mail"
+          className={`auth__input ${errors.email && 'auth__input-invalid'}`}
+          minLength="1"
           maxLength="40"
+          required
+          onChange={handleChange}
+          value={values.email || ''}
+          pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
         />
-
-        <span className="sign__input-heading">Пароль</span>
+        <span id="input-error" className="error-text">
+          {errors.email}
+        </span>
+      </label>
+      <label className="auth__label">
+        Пароль
         <input
           id="password"
-          name="password"
-          autoComplete="off"
           type="password"
-          className="sign__input"
+          name="password"
           placeholder="Пароль"
-          minLength="8"
-          maxLength="15"
+          className={`auth__input ${errors.password && 'auth__input-invalid'}`}
+          minLength="3"
+          maxLength="20"
+          required
+          onChange={handleChange}
+          value={values.password || ''}
         />
-        <span className="sign__input-error">Что-то пошло не так...</span>
-
-        <button type="button" className="sign__submit-button button" onClick={handleLogin}>
-          Войти
-        </button>
-        <span className="sign__to-sign">
-          Ещё не зарегистрированы?{" "}
-          <Link to="/sign-up" className="sign__link-to-sign button">
-            Регистрация
-          </Link>
+        <span id="input-error" className="error-text">
+          {errors.password}
         </span>
-      </form>
-    </section>
-  );
+      </label>
+    </Auth>
+  )
 }
+
+export default Login
